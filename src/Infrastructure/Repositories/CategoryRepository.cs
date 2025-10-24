@@ -19,7 +19,7 @@ public class CategoryRepository : ICategoryRepository
         return await _context.Categories.ToListAsync();
     }
 
-    public async Task<Category> GetByIdAsync(Guid id)
+    public async Task<Category?> GetByIdAsync(Guid id)
     {
         return await _context.Categories.FindAsync(id);
     }

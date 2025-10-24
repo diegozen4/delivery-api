@@ -8,7 +8,7 @@ public class DeliveryUser : BaseEntity
     public Guid UserId { get; set; }
     public User User { get; set; }
 
-    public DeliveryUserStatus Status { get; set; }
+    public new DeliveryUserStatus Status { get; set; }
     public string VehicleDetails { get; set; }
     public double CurrentLatitude { get; set; }
     public double CurrentLongitude { get; set; }

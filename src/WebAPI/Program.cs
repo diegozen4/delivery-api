@@ -41,6 +41,8 @@ try
     builder.Services.AddScoped<IProductRepository, ProductRepository>();
     builder.Services.AddScoped<ICommerceService, CommerceService>();
     builder.Services.AddScoped<ICommerceRepository, CommerceRepository>();
+    builder.Services.AddScoped<IOrderService, OrderService>();
+    builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
     // Authentication Services
     builder.Services.AddScoped<IAuthService, AuthService>();

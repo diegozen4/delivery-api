@@ -8,7 +8,7 @@ public class Transaction : BaseEntity
 
     public decimal Amount { get; set; }
     public string PaymentMethod { get; set; }
-    public string Status { get; set; } // e.g., Pending, Succeeded, Failed
+    public new string Status { get; set; } // e.g., Pending, Succeeded, Failed
     public string? ProviderTransactionId { get; set; }
     public DateTime TransactionDate { get; set; }
 }
