@@ -54,17 +54,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Provided by GitHub
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          PR_ARGS=""
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            PR_ARGS="/d:sonar.pullrequest.provider=\"github\" \
+                    /d:sonar.pullrequest.github.repository=\" ${{ github.repository }} \" 
+                    /d:sonar.pullrequest.key=\" ${{ github.event.pull_request.number }} \" 
+                    /d:sonar.pullrequest.branch=\" ${{ github.event.pull_request.head.ref }} \" 
+                    /d:sonar.pullrequest.base=\" ${{ github.event.pull_request.base.ref }} \""
+          fi
           dotnet sonarscanner begin \
             /k:"diegozen4_delivery-api" \
             /o:"diegozen4" \
             /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.pullrequest.provider="github" \
-            /d:sonar.pullrequest.github.repository="${{ github.repository }}" \
-            /d:sonar.pullrequest.key="${{ github.event.pull_request.number }}" \
-            /d:sonar.pullrequest.branch="${{ github.event.pull_request.head.ref }}" \
-            /d:sonar.pullrequest.base="${{ github.event.pull_request.base.ref }}" \
-            /d:sonar.scm.revision="${{ github.sha }}"
+            /d:sonar.scm.revision="${{ github.sha }}" \
+            ${PR_ARGS}
 
       - name: Build the solution
         run: dotnet build DeliveryApp.sln
