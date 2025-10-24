@@ -57,3 +57,6 @@ Desktop.ini
 # Other
 *.nupkg
 *.bak
+
+# SonarCloud scanner
+.sonarqube/
