@@ -110,4 +110,40 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
             .Property(du => du.Status)
             .HasConversion<string>();
     }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        SetAuditProperties();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        SetAuditProperties();
+        return base.SaveChanges();
+    }
+
+    private void SetAuditProperties()
+    {
+        var entries = ChangeTracker.Entries<BaseEntity>();
+        var utcNow = DateTime.UtcNow;
+        // TODO: Get current user ID to set CreatedBy and UpdatedBy
+        var user = "System";
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = utcNow;
+                entry.Entity.CreatedBy = user;
+                entry.Entity.Status = entry.Entity.Status == EntityStatus.Inactive ? EntityStatus.Inactive : EntityStatus.Active;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.UpdatedAt = utcNow;
+                entry.Entity.UpdatedBy = user;
+            }
+        }
+    }
 }
