@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,34 +13,34 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "shared");
+                name: MigrationConstants.Schemas.Shared);
 
             migrationBuilder.EnsureSchema(
-                name: "commerce");
+                name: MigrationConstants.Schemas.Commerce);
 
             migrationBuilder.EnsureSchema(
-                name: "delivery");
+                name: MigrationConstants.Schemas.Delivery);
 
             migrationBuilder.EnsureSchema(
-                name: "order");
+                name: MigrationConstants.Schemas.Order);
 
             migrationBuilder.EnsureSchema(
-                name: "auth");
+                name: MigrationConstants.Schemas.Auth);
 
             migrationBuilder.EnsureSchema(
-                name: "payments");
+                name: MigrationConstants.Schemas.Payments);
 
             migrationBuilder.CreateTable(
                 name: "Images",
-                schema: "shared",
+                schema: MigrationConstants.Schemas.Shared,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: true),
-                    AltText = table.Column<string>(type: "text", nullable: true),
-                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    OwnerType = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Url = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Title = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    AltText = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    OwnerId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    OwnerType = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,11 +49,11 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Roles",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,13 +62,13 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Users",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirebaseId = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    FirebaseId = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Email = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,18 +77,18 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Addresses",
-                schema: "shared",
+                schema: MigrationConstants.Schemas.Shared,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Street = table.Column<string>(type: "text", nullable: false),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    State = table.Column<string>(type: "text", nullable: false),
-                    ZipCode = table.Column<string>(type: "text", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: false),
-                    Apartment = table.Column<string>(type: "text", nullable: true),
-                    Notes = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Street = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    City = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    State = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    ZipCode = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Country = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Apartment = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    Notes = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,7 +96,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Addresses_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -103,13 +104,13 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Commerces",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Address = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,7 +118,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Commerces_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -125,15 +126,15 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DeliveryCandidates",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ApplicationStatus = table.Column<string>(type: "text", nullable: false),
-                    RejectionReason = table.Column<string>(type: "text", nullable: true),
-                    ApplicationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    ApplicationStatus = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    RejectionReason = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    ApplicationDate = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: false),
+                    Notes = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -141,7 +142,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_DeliveryCandidates_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -149,16 +150,16 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DeliveryUsers",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    VehicleDetails = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Status = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    VehicleDetails = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
                     CurrentLatitude = table.Column<double>(type: "double precision", nullable: false),
                     CurrentLongitude = table.Column<double>(type: "double precision", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                    IsActive = table.Column<bool>(type: MigrationConstants.DataTypes.Boolean, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,7 +167,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_DeliveryUsers_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -174,15 +175,15 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Notifications",
-                schema: "shared",
+                schema: MigrationConstants.Schemas.Shared,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Message = table.Column<string>(type: "text", nullable: false),
-                    IsRead = table.Column<bool>(type: "boolean", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    NotificationType = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Message = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    IsRead = table.Column<bool>(type: MigrationConstants.DataTypes.Boolean, nullable: false),
+                    Date = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: false),
+                    NotificationType = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -190,7 +191,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Notifications_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -198,14 +199,14 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "RefreshTokens",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Token = table.Column<string>(type: "text", nullable: false),
-                    Expires = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Revoked = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Token = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Expires = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: false),
+                    Revoked = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: true),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -213,7 +214,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_RefreshTokens_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -221,11 +222,11 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 columns: table => new
                 {
-                    RolesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RolesId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    UsersId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,14 +234,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_UserRoles_Roles_RolesId",
                         column: x => x.RolesId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UsersId",
                         column: x => x.UsersId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -248,13 +249,13 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Categories",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    CommerceId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Description = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    CommerceId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -262,7 +263,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Categories_Commerces_CommerceId",
                         column: x => x.CommerceId,
-                        principalSchema: "commerce",
+                        principalSchema: MigrationConstants.Schemas.Commerce,
                         principalTable: "Commerces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -270,12 +271,12 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DeliveryGroups",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    CommerceId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    CommerceId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,7 +284,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_DeliveryGroups_Commerces_CommerceId",
                         column: x => x.CommerceId,
-                        principalSchema: "commerce",
+                        principalSchema: MigrationConstants.Schemas.Commerce,
                         principalTable: "Commerces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -291,15 +292,15 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Orders",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CommerceId = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Total = table.Column<decimal>(type: "numeric", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    CommerceId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    OrderDate = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: false),
+                    Status = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Total = table.Column<decimal>(type: MigrationConstants.DataTypes.Numeric, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -307,14 +308,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Orders_Commerces_CommerceId",
                         column: x => x.CommerceId,
-                        principalSchema: "commerce",
+                        principalSchema: MigrationConstants.Schemas.Commerce,
                         principalTable: "Commerces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -322,16 +323,16 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Products",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Price = table.Column<decimal>(type: "numeric", nullable: false),
-                    ImageUrl = table.Column<string>(type: "text", nullable: false),
-                    CommerceId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Description = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Price = table.Column<decimal>(type: MigrationConstants.DataTypes.Numeric, nullable: false),
+                    ImageUrl = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    CommerceId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    CategoryId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -339,14 +340,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
-                        principalSchema: "commerce",
+                        principalSchema: MigrationConstants.Schemas.Commerce,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_Commerces_CommerceId",
                         column: x => x.CommerceId,
-                        principalSchema: "commerce",
+                        principalSchema: MigrationConstants.Schemas.Commerce,
                         principalTable: "Commerces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -354,12 +355,12 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DeliveryGroupUsers",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 columns: table => new
                 {
-                    DeliveryGroupId = table.Column<Guid>(type: "uuid", nullable: false),
-                    DeliveryUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: false)
+                    DeliveryGroupId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    DeliveryUserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -367,14 +368,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_DeliveryGroupUsers_DeliveryGroups_DeliveryGroupId",
                         column: x => x.DeliveryGroupId,
-                        principalSchema: "delivery",
+                        principalSchema: MigrationConstants.Schemas.Delivery,
                         principalTable: "DeliveryGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DeliveryGroupUsers_DeliveryUsers_DeliveryUserId",
                         column: x => x.DeliveryUserId,
-                        principalSchema: "delivery",
+                        principalSchema: MigrationConstants.Schemas.Delivery,
                         principalTable: "DeliveryUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -382,14 +383,14 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OrderStatusHistories",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    ChangeDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    OrderId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Status = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    ChangeDate = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: false),
+                    Notes = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -397,7 +398,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_OrderStatusHistories_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalSchema: "order",
+                        principalSchema: MigrationConstants.Schemas.Order,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -405,16 +406,16 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Transactions",
-                schema: "payments",
+                schema: MigrationConstants.Schemas.Payments,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    ProviderTransactionId = table.Column<string>(type: "text", nullable: true),
-                    TransactionDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    OrderId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Amount = table.Column<decimal>(type: MigrationConstants.DataTypes.Numeric, nullable: false),
+                    PaymentMethod = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Status = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    ProviderTransactionId = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    TransactionDate = table.Column<DateTime>(type: MigrationConstants.DataTypes.TimestampTz, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -422,7 +423,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Transactions_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalSchema: "order",
+                        principalSchema: MigrationConstants.Schemas.Order,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -430,14 +431,14 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "OrderDetails",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Quantity = table.Column<int>(type: "integer", nullable: false),
-                    UnitPrice = table.Column<decimal>(type: "numeric", nullable: false)
+                    Id = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    OrderId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    ProductId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    Quantity = table.Column<int>(type: MigrationConstants.DataTypes.Integer, nullable: false),
+                    UnitPrice = table.Column<decimal>(type: MigrationConstants.DataTypes.Numeric, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -445,14 +446,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_OrderDetails_Orders_OrderId",
                         column: x => x.OrderId,
-                        principalSchema: "order",
+                        principalSchema: MigrationConstants.Schemas.Order,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrderDetails_Products_ProductId",
                         column: x => x.ProductId,
-                        principalSchema: "commerce",
+                        principalSchema: MigrationConstants.Schemas.Commerce,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -460,109 +461,109 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
-                schema: "shared",
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_CommerceId",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories",
                 column: "CommerceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Commerces_UserId",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryCandidates_UserId",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryGroups_CommerceId",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups",
                 column: "CommerceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryGroupUsers_DeliveryUserId",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers",
                 column: "DeliveryUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeliveryUsers_UserId",
-                schema: "delivery",
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
-                schema: "shared",
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CommerceId",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders",
                 column: "CommerceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_UserId",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderStatusHistories_OrderId",
-                schema: "order",
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CommerceId",
-                schema: "commerce",
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
                 column: "CommerceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_OrderId",
-                schema: "payments",
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_UsersId",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "UserRoles",
                 column: "UsersId");
         }
@@ -572,75 +573,75 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Addresses",
-                schema: "shared");
+                schema: MigrationConstants.Schemas.Shared);
 
             migrationBuilder.DropTable(
                 name: "DeliveryCandidates",
-                schema: "delivery");
+                schema: MigrationConstants.Schemas.Delivery);
 
             migrationBuilder.DropTable(
                 name: "DeliveryGroupUsers",
-                schema: "delivery");
+                schema: MigrationConstants.Schemas.Delivery);
 
             migrationBuilder.DropTable(
                 name: "Images",
-                schema: "shared");
+                schema: MigrationConstants.Schemas.Shared);
 
             migrationBuilder.DropTable(
                 name: "Notifications",
-                schema: "shared");
+                schema: MigrationConstants.Schemas.Shared);
 
             migrationBuilder.DropTable(
                 name: "OrderDetails",
-                schema: "order");
+                schema: MigrationConstants.Schemas.Order);
 
             migrationBuilder.DropTable(
                 name: "OrderStatusHistories",
-                schema: "order");
+                schema: MigrationConstants.Schemas.Order);
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens",
-                schema: "auth");
+                schema: MigrationConstants.Schemas.Auth);
 
             migrationBuilder.DropTable(
                 name: "Transactions",
-                schema: "payments");
+                schema: MigrationConstants.Schemas.Payments);
 
             migrationBuilder.DropTable(
                 name: "UserRoles",
-                schema: "auth");
+                schema: MigrationConstants.Schemas.Auth);
 
             migrationBuilder.DropTable(
                 name: "DeliveryGroups",
-                schema: "delivery");
+                schema: MigrationConstants.Schemas.Delivery);
 
             migrationBuilder.DropTable(
                 name: "DeliveryUsers",
-                schema: "delivery");
+                schema: MigrationConstants.Schemas.Delivery);
 
             migrationBuilder.DropTable(
                 name: "Products",
-                schema: "commerce");
+                schema: MigrationConstants.Schemas.Commerce);
 
             migrationBuilder.DropTable(
                 name: "Orders",
-                schema: "order");
+                schema: MigrationConstants.Schemas.Order);
 
             migrationBuilder.DropTable(
                 name: "Roles",
-                schema: "auth");
+                schema: MigrationConstants.Schemas.Auth);
 
             migrationBuilder.DropTable(
                 name: "Categories",
-                schema: "commerce");
+                schema: MigrationConstants.Schemas.Commerce);
 
             migrationBuilder.DropTable(
                 name: "Commerces",
-                schema: "commerce");
+                schema: MigrationConstants.Schemas.Commerce);
 
             migrationBuilder.DropTable(
                 name: "Users",
-                schema: "auth");
+                schema: MigrationConstants.Schemas.Auth);
         }
     }
 }

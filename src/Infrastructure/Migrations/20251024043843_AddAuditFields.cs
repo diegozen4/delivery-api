@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -12,526 +13,526 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "payments",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "payments",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "payments",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "payments",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "auth",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "auth",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "auth",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "auth",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "auth",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "commerce",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "order",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "shared",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "shared",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "delivery",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "delivery",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "delivery",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "commerce",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "commerce",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<string>(
-                name: "CreatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
-                name: "Status",
-                schema: "shared",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "UpdatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UpdatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
         }
 
@@ -539,358 +540,358 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "payments",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "payments",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "payments",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "payments",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Payments,
                 table: "Transactions");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "auth",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "auth",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "auth",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "auth",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "auth",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Auth,
                 table: "RefreshTokens");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "commerce",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Products");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderStatusHistories");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "Orders");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "order",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "order",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Order,
                 table: "OrderDetails");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "shared",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Notifications");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "shared",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Images");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryUsers");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "delivery",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroupUsers");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "delivery",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryGroups");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "delivery",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "delivery",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Delivery,
                 table: "DeliveryCandidates");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "commerce",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Commerces");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "commerce",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "commerce",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Commerce,
                 table: "Categories");
 
             migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses");
 
             migrationBuilder.DropColumn(
-                name: "CreatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.CreatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses");
 
             migrationBuilder.DropColumn(
-                name: "Status",
-                schema: "shared",
+                name: MigrationConstants.Columns.Status,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedAt",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedAt,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses");
 
             migrationBuilder.DropColumn(
-                name: "UpdatedBy",
-                schema: "shared",
+                name: MigrationConstants.Columns.UpdatedBy,
+                schema: MigrationConstants.Schemas.Shared,
                 table: "Addresses");
         }
     }

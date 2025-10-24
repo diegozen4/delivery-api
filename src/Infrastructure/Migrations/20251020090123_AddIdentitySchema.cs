@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -14,144 +15,144 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "UserRoles",
-                schema: "auth");
+                schema: MigrationConstants.Schemas.Auth);
 
             migrationBuilder.DropColumn(
                 name: "Name",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "character varying(256)",
+                type: MigrationConstants.DataTypes.Varchar256,
                 maxLength: 256,
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "text");
+                oldType: MigrationConstants.DataTypes.Text);
 
             migrationBuilder.AddColumn<int>(
                 name: "AccessFailedCount",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "integer",
+                type: MigrationConstants.DataTypes.Integer,
                 nullable: false,
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<string>(
                 name: "ConcurrencyStamp",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "EmailConfirmed",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "boolean",
+                type: MigrationConstants.DataTypes.Boolean,
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "LockoutEnabled",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "boolean",
+                type: MigrationConstants.DataTypes.Boolean,
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<DateTimeOffset>(
                 name: "LockoutEnd",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "timestamp with time zone",
+                type: MigrationConstants.DataTypes.TimestampTz,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "NormalizedEmail",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "character varying(256)",
+                type: MigrationConstants.DataTypes.Varchar256,
                 maxLength: 256,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "NormalizedUserName",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "character varying(256)",
+                type: MigrationConstants.DataTypes.Varchar256,
                 maxLength: 256,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "PasswordHash",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "PhoneNumber",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "PhoneNumberConfirmed",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "boolean",
+                type: MigrationConstants.DataTypes.Boolean,
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "SecurityStamp",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<bool>(
                 name: "TwoFactorEnabled",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "boolean",
+                type: MigrationConstants.DataTypes.Boolean,
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<string>(
                 name: "UserName",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "character varying(256)",
+                type: MigrationConstants.DataTypes.Varchar256,
                 maxLength: 256,
                 nullable: true);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles",
-                type: "character varying(256)",
+                type: MigrationConstants.DataTypes.Varchar256,
                 maxLength: 256,
                 nullable: true,
                 oldClrType: typeof(string),
-                oldType: "text");
+                oldType: MigrationConstants.DataTypes.Text);
 
             migrationBuilder.AddColumn<string>(
                 name: "ConcurrencyStamp",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "NormalizedName",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles",
-                type: "character varying(256)",
+                type: MigrationConstants.DataTypes.Varchar256,
                 maxLength: 256,
                 nullable: true);
 
@@ -159,11 +160,11 @@ namespace Infrastructure.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: MigrationConstants.DataTypes.Integer, nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                    RoleId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    ClaimType = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    ClaimValue = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -171,7 +172,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetRoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -181,11 +182,11 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: MigrationConstants.DataTypes.Integer, nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    ClaimType = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    ClaimValue = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -193,7 +194,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserClaims_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -203,10 +204,10 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    ProviderKey = table.Column<string>(type: "text", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                    LoginProvider = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    ProviderKey = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true),
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,7 +215,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserLogins_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -224,8 +225,8 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    RoleId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,14 +234,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_Roles_RoleId",
                         column: x => x.RoleId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -250,10 +251,10 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LoginProvider = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: true)
+                    UserId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    LoginProvider = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Name = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: false),
+                    Value = table.Column<string>(type: MigrationConstants.DataTypes.Text, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -261,7 +262,7 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AspNetUserTokens_Users_UserId",
                         column: x => x.UserId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -269,20 +270,20 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
                 column: "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true);
@@ -328,133 +329,133 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropIndex(
                 name: "EmailIndex",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropIndex(
                 name: "UserNameIndex",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropIndex(
                 name: "RoleNameIndex",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles");
 
             migrationBuilder.DropColumn(
                 name: "AccessFailedCount",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "ConcurrencyStamp",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "EmailConfirmed",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "LockoutEnabled",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "LockoutEnd",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "NormalizedEmail",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "NormalizedUserName",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "PasswordHash",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "PhoneNumber",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "PhoneNumberConfirmed",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "SecurityStamp",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "TwoFactorEnabled",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "UserName",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users");
 
             migrationBuilder.DropColumn(
                 name: "ConcurrencyStamp",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles");
 
             migrationBuilder.DropColumn(
                 name: "NormalizedName",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: false,
                 defaultValue: "",
                 oldClrType: typeof(string),
-                oldType: "character varying(256)",
+                oldType: MigrationConstants.DataTypes.Varchar256,
                 oldMaxLength: 256,
                 oldNullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Name",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Users",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Name",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "Roles",
-                type: "text",
+                type: MigrationConstants.DataTypes.Text,
                 nullable: false,
                 defaultValue: "",
                 oldClrType: typeof(string),
-                oldType: "character varying(256)",
+                oldType: MigrationConstants.DataTypes.Varchar256,
                 oldMaxLength: 256,
                 oldNullable: true);
 
             migrationBuilder.CreateTable(
                 name: "UserRoles",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 columns: table => new
                 {
-                    RolesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uuid", nullable: false)
+                    RolesId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false),
+                    UsersId = table.Column<Guid>(type: MigrationConstants.DataTypes.Uuid, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -462,14 +463,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_UserRoles_Roles_RolesId",
                         column: x => x.RolesId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UsersId",
                         column: x => x.UsersId,
-                        principalSchema: "auth",
+                        principalSchema: MigrationConstants.Schemas.Auth,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -477,7 +478,7 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_UsersId",
-                schema: "auth",
+                schema: MigrationConstants.Schemas.Auth,
                 table: "UserRoles",
                 column: "UsersId");
         }
