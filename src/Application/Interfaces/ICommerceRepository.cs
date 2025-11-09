@@ -9,4 +9,5 @@ public interface ICommerceRepository
     Task<Commerce> AddAsync(Commerce commerce);
     Task UpdateAsync(Commerce commerce);
     Task DeleteAsync(Guid id);
+    Task<bool> IsUserOwnerAsync(Guid commerceId, Guid userId);
 }

@@ -46,4 +46,9 @@ public class CommerceRepository : ICommerceRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> IsUserOwnerAsync(Guid commerceId, Guid userId)
+    {
+        return await _context.Commerces.AnyAsync(c => c.Id == commerceId && c.UserId == userId);
+    }
 }

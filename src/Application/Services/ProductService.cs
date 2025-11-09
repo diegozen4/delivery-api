@@ -7,10 +7,12 @@ namespace Application.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
+    private readonly ICommerceRepository _commerceRepository;
 
-    public ProductService(IProductRepository productRepository)
+    public ProductService(IProductRepository productRepository, ICommerceRepository commerceRepository)
     {
         _productRepository = productRepository;
+        _commerceRepository = commerceRepository;
     }
 
     public async Task<IEnumerable<ProductDto>> GetAllAsync()
@@ -22,7 +24,8 @@ public class ProductService : IProductService
             Name = p.Name,
             Description = p.Description,
             Price = p.Price,
-            CategoryId = p.CategoryId
+            CategoryId = p.CategoryId,
+            CommerceId = p.CommerceId
         });
     }
 
@@ -39,18 +42,26 @@ public class ProductService : IProductService
             Name = product.Name,
             Description = product.Description,
             Price = product.Price,
-            CategoryId = product.CategoryId
+            CategoryId = product.CategoryId,
+            CommerceId = product.CommerceId
         };
     }
 
-    public async Task<ProductDto> CreateAsync(CreateProductRequest request)
+    public async Task<ProductDto> CreateAsync(CreateProductRequest request, Guid userId, IEnumerable<string> userRoles)
     {
+        var isOwner = await _commerceRepository.IsUserOwnerAsync(request.CommerceId, userId);
+        if (!isOwner && !userRoles.Contains("Admin"))
+        {
+            throw new UnauthorizedAccessException("User is not authorized to create products for this commerce.");
+        }
+
         var product = new Product
         {
             Name = request.Name,
             Description = request.Description,
             Price = request.Price,
-            CategoryId = request.CategoryId
+            CategoryId = request.CategoryId,
+            CommerceId = request.CommerceId
         };
 
         var createdProduct = await _productRepository.AddAsync(product);
@@ -60,25 +71,47 @@ public class ProductService : IProductService
             Name = createdProduct.Name,
             Description = createdProduct.Description,
             Price = createdProduct.Price,
-            CategoryId = createdProduct.CategoryId
+            CategoryId = createdProduct.CategoryId,
+            CommerceId = createdProduct.CommerceId
         };
     }
 
-    public async Task UpdateAsync(Guid id, UpdateProductRequest request)
+    public async Task UpdateAsync(Guid id, UpdateProductRequest request, Guid userId, IEnumerable<string> userRoles)
     {
         var product = await _productRepository.GetByIdAsync(id);
-        if (product != null)
+        if (product == null)
         {
-            product.Name = request.Name;
-            product.Description = request.Description;
-            product.Price = request.Price;
-            product.CategoryId = request.CategoryId;
-            await _productRepository.UpdateAsync(product);
+            // Consider throwing a NotFoundException here
+            return;
         }
+        
+        var isOwner = await _commerceRepository.IsUserOwnerAsync(product.CommerceId, userId);
+        if (!isOwner && !userRoles.Contains("Admin"))
+        {
+            throw new UnauthorizedAccessException("User is not authorized to update products for this commerce.");
+        }
+        
+        product.Name = request.Name;
+        product.Description = request.Description;
+        product.Price = request.Price;
+        product.CategoryId = request.CategoryId;
+        await _productRepository.UpdateAsync(product);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id, Guid userId, IEnumerable<string> userRoles)
     {
+        var product = await _productRepository.GetByIdAsync(id);
+        if (product == null)
+        {
+            return;
+        }
+
+        var isOwner = await _commerceRepository.IsUserOwnerAsync(product.CommerceId, userId);
+        if (!isOwner && !userRoles.Contains("Admin"))
+        {
+            throw new UnauthorizedAccessException("User is not authorized to delete products for this commerce.");
+        }
+
         await _productRepository.DeleteAsync(id);
     }
 }

@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using Application.Interfaces;
 using Contracts.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -34,23 +36,35 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Negocio,Admin")]
     public async Task<ActionResult<ProductDto>> Create(CreateProductRequest request)
     {
-        var product = await _productService.CreateAsync(request);
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value);
+        
+        var product = await _productService.CreateAsync(request, userId, userRoles);
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Negocio,Admin")]
     public async Task<IActionResult> Update(Guid id, UpdateProductRequest request)
     {
-        await _productService.UpdateAsync(id, request);
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value);
+
+        await _productService.UpdateAsync(id, request, userId, userRoles);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Negocio,Admin")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        await _productService.DeleteAsync(id);
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var userRoles = User.FindAll(ClaimTypes.Role).Select(c => c.Value);
+
+        await _productService.DeleteAsync(id, userId, userRoles);
         return NoContent();
     }
 }
