@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
@@ -26,6 +27,7 @@ public class UserService : IUserService
     private readonly IValidator<ApproveDeliveryUserRequest> _approveDeliveryUserRequestValidator;
     private readonly IValidator<AssignRoleRequest> _assignRoleRequestValidator;
     private readonly IValidator<RevokeRoleRequest> _revokeRoleRequestValidator;
+    private readonly IValidator<UserFilterDto> _userFilterDtoValidator;
 
     public UserService(
         UserManager<User> userManager,
@@ -39,7 +41,8 @@ public class UserService : IUserService
         IValidator<ApplyAsDeliveryUserRequest> applyAsDeliveryUserRequestValidator,
         IValidator<ApproveDeliveryUserRequest> approveDeliveryUserRequestValidator,
         IValidator<AssignRoleRequest> assignRoleRequestValidator,
-        IValidator<RevokeRoleRequest> revokeRoleRequestValidator)
+        IValidator<RevokeRoleRequest> revokeRoleRequestValidator,
+        IValidator<UserFilterDto> userFilterDtoValidator)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -53,6 +56,7 @@ public class UserService : IUserService
         _approveDeliveryUserRequestValidator = approveDeliveryUserRequestValidator;
         _assignRoleRequestValidator = assignRoleRequestValidator;
         _revokeRoleRequestValidator = revokeRoleRequestValidator;
+        _userFilterDtoValidator = userFilterDtoValidator;
     }
 
     public async Task<UserProfileDto> GetUserProfileAsync(Guid userId)
@@ -332,5 +336,58 @@ public class UserService : IUserService
         {
             throw new InvalidOperationException($"Failed to revoke role '{request.RoleName}' from user {userId}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
+    }
+
+    public async Task<UserPagedListDto> GetUsersAsync(UserFilterDto filter)
+    {
+        await _userFilterDtoValidator.ValidateAndThrowAsync(filter);
+
+        var query = _userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrEmpty(filter.SearchTerm))
+        {
+            query = query.Where(u => u.UserName.Contains(filter.SearchTerm) ||
+                                     u.Email.Contains(filter.SearchTerm) ||
+                                     u.FirstName.Contains(filter.SearchTerm) ||
+                                     u.LastName.Contains(filter.SearchTerm));
+        }
+
+        if (!string.IsNullOrEmpty(filter.Role))
+        {
+            var usersInRole = await _userManager.GetUsersInRoleAsync(filter.Role);
+            query = query.Where(u => usersInRole.Contains(u));
+        }
+
+        var totalCount = await query.CountAsync();
+        var users = await query
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToListAsync();
+
+        return new UserPagedListDto
+        {
+            Users = _mapper.Map<List<UserListItemDto>>(users),
+            TotalCount = totalCount,
+            PageNumber = filter.PageNumber,
+            PageSize = filter.PageSize
+        };
+    }
+
+    public async Task<UserDetailDto> GetUserDetailAsync(Guid userId)
+    {
+        var user = await _userManager.Users
+            .Include(u => u.Addresses)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            throw new ArgumentException($"User with ID {userId} not found.");
+        }
+
+        var userDetailDto = _mapper.Map<UserDetailDto>(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        userDetailDto.Roles.AddRange(roles);
+
+        return userDetailDto;
     }
 }

@@ -18,4 +18,6 @@ public interface IUserService
     Task RejectDeliveryCandidateAsync(Guid candidateId, ApproveDeliveryUserRequest request);
     Task AssignRoleToUserAsync(Guid userId, AssignRoleRequest request);
     Task RevokeRoleFromUserAsync(Guid userId, RevokeRoleRequest request);
+    Task<UserPagedListDto> GetUsersAsync(UserFilterDto filter);
+    Task<UserDetailDto> GetUserDetailAsync(Guid userId);
 }

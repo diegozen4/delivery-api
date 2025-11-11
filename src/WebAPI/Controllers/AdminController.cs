@@ -115,4 +115,32 @@ public class AdminController : ControllerBase
             return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
         }
     }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetUsers([FromQuery] UserFilterDto filter)
+    {
+        try
+        {
+            var users = await _userService.GetUsersAsync(filter);
+            return Ok(users);
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
+        }
+    }
+
+    [HttpGet("users/{userId}")]
+    public async Task<IActionResult> GetUserDetail(Guid userId)
+    {
+        try
+        {
+            var userDetail = await _userService.GetUserDetailAsync(userId);
+            return Ok(userDetail);
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 }
