@@ -24,6 +24,8 @@ public class UserService : IUserService
     private readonly IValidator<UpdateAddressRequest> _updateAddressRequestValidator;
     private readonly IValidator<ApplyAsDeliveryUserRequest> _applyAsDeliveryUserRequestValidator;
     private readonly IValidator<ApproveDeliveryUserRequest> _approveDeliveryUserRequestValidator;
+    private readonly IValidator<AssignRoleRequest> _assignRoleRequestValidator;
+    private readonly IValidator<RevokeRoleRequest> _revokeRoleRequestValidator;
 
     public UserService(
         UserManager<User> userManager,
@@ -35,7 +37,9 @@ public class UserService : IUserService
         IValidator<CreateAddressRequest> createAddressRequestValidator,
         IValidator<UpdateAddressRequest> updateAddressRequestValidator,
         IValidator<ApplyAsDeliveryUserRequest> applyAsDeliveryUserRequestValidator,
-        IValidator<ApproveDeliveryUserRequest> approveDeliveryUserRequestValidator)
+        IValidator<ApproveDeliveryUserRequest> approveDeliveryUserRequestValidator,
+        IValidator<AssignRoleRequest> assignRoleRequestValidator,
+        IValidator<RevokeRoleRequest> revokeRoleRequestValidator)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -47,6 +51,8 @@ public class UserService : IUserService
         _updateAddressRequestValidator = updateAddressRequestValidator;
         _applyAsDeliveryUserRequestValidator = applyAsDeliveryUserRequestValidator;
         _approveDeliveryUserRequestValidator = approveDeliveryUserRequestValidator;
+        _assignRoleRequestValidator = assignRoleRequestValidator;
+        _revokeRoleRequestValidator = revokeRoleRequestValidator;
     }
 
     public async Task<UserProfileDto> GetUserProfileAsync(Guid userId)
@@ -231,7 +237,7 @@ public class UserService : IUserService
         // Assign "Repartidor" role
         if (!await _roleManager.RoleExistsAsync("Repartidor"))
         {
-            await _roleManager.CreateAsync(new Role { Name = "Repartidor" }); // Corregido
+            await _roleManager.CreateAsync(new Role { Name = "Repartidor" });
         }
         var result = await _userManager.AddToRoleAsync(user, "Repartidor");
         if (!result.Succeeded)
@@ -267,5 +273,64 @@ public class UserService : IUserService
         candidate.Status = ApplicationStatus.Rejected;
         candidate.AdminNotes = request.AdminNotes;
         await _deliveryCandidateRepository.UpdateAsync(candidate);
+    }
+
+    public async Task AssignRoleToUserAsync(Guid userId, AssignRoleRequest request)
+    {
+        await _assignRoleRequestValidator.ValidateAndThrowAsync(request);
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            throw new ArgumentException($"User with ID {userId} not found.");
+        }
+
+        var roleExists = await _roleManager.RoleExistsAsync(request.RoleName);
+        if (!roleExists)
+        {
+            // Optionally create the role if it doesn't exist, or throw an error
+            throw new ArgumentException($"Role '{request.RoleName}' does not exist.");
+        }
+
+        var isInRole = await _userManager.IsInRoleAsync(user, request.RoleName);
+        if (isInRole)
+        {
+            throw new InvalidOperationException($"User {userId} is already in role '{request.RoleName}'.");
+        }
+
+        var result = await _userManager.AddToRoleAsync(user, request.RoleName);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed to assign role '{request.RoleName}' to user {userId}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+        }
+    }
+
+    public async Task RevokeRoleFromUserAsync(Guid userId, RevokeRoleRequest request)
+    {
+        await _revokeRoleRequestValidator.ValidateAndThrowAsync(request);
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            throw new ArgumentException($"User with ID {userId} not found.");
+        }
+
+        var roleExists = await _roleManager.RoleExistsAsync(request.RoleName);
+        if (!roleExists)
+        {
+            throw new ArgumentException($"Role '{request.RoleName}' does not exist.");
+        }
+
+        var isInRole = await _userManager.IsInRoleAsync(user, request.RoleName);
+        if (!isInRole)
+        {
+            throw new InvalidOperationException($"User {userId} is not in role '{request.RoleName}'.");
+        }
+
+        var result = await _userManager.RemoveFromRoleAsync(user, request.RoleName);
+        if (!result.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed to revoke role '{request.RoleName}' from user {userId}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+        }
     }
 }

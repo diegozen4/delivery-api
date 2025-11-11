@@ -16,4 +16,6 @@ public interface IUserService
     Task<IEnumerable<DeliveryCandidateDto>> GetDeliveryCandidatesAsync();
     Task ApproveDeliveryCandidateAsync(Guid candidateId, ApproveDeliveryUserRequest request);
     Task RejectDeliveryCandidateAsync(Guid candidateId, ApproveDeliveryUserRequest request);
+    Task AssignRoleToUserAsync(Guid userId, AssignRoleRequest request);
+    Task RevokeRoleFromUserAsync(Guid userId, RevokeRoleRequest request);
 }

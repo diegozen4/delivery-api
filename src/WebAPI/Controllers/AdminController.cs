@@ -71,4 +71,48 @@ public class AdminController : ControllerBase
             return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
         }
     }
+
+    [HttpPost("users/{userId}/assign-role")]
+    public async Task<IActionResult> AssignRoleToUser(Guid userId, AssignRoleRequest request)
+    {
+        try
+        {
+            await _userService.AssignRoleToUserAsync(userId, request);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
+        }
+    }
+
+    [HttpPost("users/{userId}/revoke-role")]
+    public async Task<IActionResult> RevokeRoleFromUser(Guid userId, RevokeRoleRequest request)
+    {
+        try
+        {
+            await _userService.RevokeRoleFromUserAsync(userId, request);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
+        }
+    }
 }
