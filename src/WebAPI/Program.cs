@@ -48,6 +48,8 @@ try
     builder.Services.AddScoped<IDeliveryService, DeliveryService>();
     builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
     builder.Services.AddScoped<IUserService, UserService>(); // Registrar IUserService y UserService
+    builder.Services.AddScoped<IAddressRepository, AddressRepository>(); // Registrar IAddressRepository y AddressRepository
+    builder.Services.AddScoped<IDeliveryCandidateRepository, DeliveryCandidateRepository>(); // Registrar IDeliveryCandidateRepository y DeliveryCandidateRepository
 
     // FluentValidation
     builder.Services.AddValidatorsFromAssembly(typeof(IOrderService).Assembly); // Usar una clase conocida del ensamblado Application
