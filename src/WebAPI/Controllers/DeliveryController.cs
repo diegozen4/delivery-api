@@ -56,5 +56,59 @@ namespace WebAPI.Controllers
             }
             // Other exceptions will be caught by the ErrorHandlingMiddleware
         }
+
+        [HttpPost("orders/{orderId}/accept")]
+        public async Task<IActionResult> AcceptMarketOrder(Guid orderId)
+        {
+            var deliveryUserClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(deliveryUserClaimId) || !Guid.TryParse(deliveryUserClaimId, out Guid deliveryUserId))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                await _deliveryService.AcceptMarketOrderAsync(orderId, deliveryUserId);
+                return NoContent(); // 204 No Content
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            // Other exceptions will be caught by the ErrorHandlingMiddleware
+        }
+
+        [HttpPut("orders/{orderId}/status")]
+        public async Task<IActionResult> UpdateDeliveryStatus(Guid orderId, UpdateDeliveryStatusRequest request)
+        {
+            var deliveryUserClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(deliveryUserClaimId) || !Guid.TryParse(deliveryUserClaimId, out Guid deliveryUserId))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                await _deliveryService.UpdateDeliveryStatusAsync(orderId, request, deliveryUserId);
+                return NoContent(); // 204 No Content
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            // Other exceptions will be caught by the ErrorHandlingMiddleware
+        }
     }
 }
