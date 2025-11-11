@@ -81,3 +81,23 @@ El sistema de usuarios está construido sobre **ASP.NET Core Identity** y define
     -   Es gestionada por un `DeliveryGroupAdmin`.
     -   Permite a los `Commerce` externalizar o gestionar su propia flota de repartidores de forma organizada.
     -   Puede tener diferentes modos de asignación de pedidos (manual, broadcast, etc.).
+
+---
+
+## 2.4. Modelos de Asignación de Pedidos
+
+La plataforma soporta dos modelos distintos para la asignación de pedidos a los repartidores, elegibles por el `Negocio` al momento de publicar un pedido para entrega:
+
+### 2.4.1. Modelo de Mercado Abierto (`DispatchMode.Market`)
+
+*   **Descripción:** El pedido se publica en una lista de "pedidos disponibles" visible para todos los `Repartidores` cercanos que estén en estado "Disponible". El primer `Repartidor` que acepta el pedido, se lo queda.
+*   **Flujo:** El `Negocio` publica el pedido, y este queda a la espera de ser aceptado por un `Repartidor`.
+*   **Precio del Servicio:** El precio del servicio de entrega es predefinido por la plataforma o por el `Negocio` (si aplica).
+
+### 2.4.2. Modelo de Negociación (`DispatchMode.Negotiation`)
+
+*   **Descripción:** El `Negocio` publica el pedido con una `ProposedDeliveryFee` (tarifa de entrega propuesta). Los `Repartidores` cercanos pueden ver este pedido y enviar sus propias `DeliveryOffer` (ofertas) con un `OfferAmount` (monto de oferta). El `Negocio` revisa las ofertas recibidas y elige la que más le convenga.
+*   **Flujo:** El `Negocio` publica el pedido con una tarifa propuesta. Los `Repartidores` envían ofertas. El `Negocio` acepta una oferta, asignando el pedido al `Repartidor` correspondiente.
+*   **Precio del Servicio:** El `Negocio` propone un precio inicial, pero el precio final se determina por la oferta aceptada.
+
+---
