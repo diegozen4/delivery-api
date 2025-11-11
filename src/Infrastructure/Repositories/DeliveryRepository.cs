@@ -37,4 +37,10 @@ public class DeliveryRepository : IDeliveryRepository
             .Where(o => o.Status == OrderStatus.AwaitingBids && o.DeliveryUserId == null)
             .ToListAsync();
     }
+
+    public async Task AddOfferAsync(DeliveryOffer offer)
+    {
+        await _context.DeliveryOffers.AddAsync(offer);
+        await _context.SaveChangesAsync();
+    }
 }

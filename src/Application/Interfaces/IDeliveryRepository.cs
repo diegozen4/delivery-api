@@ -6,4 +6,5 @@ public interface IDeliveryRepository
 {
     Task<IEnumerable<Order>> GetAvailableOrdersAsync();
     Task<IEnumerable<Order>> GetNegotiableOrdersAsync();
+    Task AddOfferAsync(DeliveryOffer offer);
 }

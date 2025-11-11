@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Contracts.Deliveries;
 using Application.Interfaces;
+using System.Security.Claims;
 
 namespace WebAPI.Controllers
 {
@@ -29,6 +30,31 @@ namespace WebAPI.Controllers
         {
             var orders = await _deliveryService.GetNegotiableOrdersAsync();
             return Ok(orders);
+        }
+
+        [HttpPost("orders/{orderId}/offers")]
+        public async Task<IActionResult> CreateOffer(Guid orderId, CreateOfferRequest request)
+        {
+            var deliveryUserClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(deliveryUserClaimId) || !Guid.TryParse(deliveryUserClaimId, out Guid deliveryUserId))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                await _deliveryService.CreateOfferAsync(orderId, request, deliveryUserId);
+                return NoContent(); // 204 No Content, as the offer is created
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            // Other exceptions will be caught by the ErrorHandlingMiddleware
         }
     }
 }
