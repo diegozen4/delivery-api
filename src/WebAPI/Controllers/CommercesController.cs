@@ -1,12 +1,14 @@
 using Application.Interfaces;
 using Contracts.Commerces;
+using Contracts.DeliveryGroups; // Added for DeliveryGroup DTOs and Requests
 using Contracts.Products;
-using Contracts.Categories; // Added
+using Contracts.Categories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using System.Linq;
 
 namespace WebAPI.Controllers;
 
@@ -16,13 +18,15 @@ public class CommercesController : ControllerBase
 {
     private readonly ICommerceService _commerceService;
     private readonly IProductService _productService;
-    private readonly ICategoryService _categoryService; // Added ICategoryService
+    private readonly ICategoryService _categoryService;
+    private readonly IDeliveryGroupService _deliveryGroupService;
 
-    public CommercesController(ICommerceService commerceService, IProductService productService, ICategoryService categoryService) // Added ICategoryService
+    public CommercesController(ICommerceService commerceService, IProductService productService, ICategoryService categoryService, IDeliveryGroupService deliveryGroupService)
     {
         _commerceService = commerceService;
         _productService = productService;
-        _categoryService = categoryService; // Assigned ICategoryService
+        _categoryService = categoryService;
+        _deliveryGroupService = deliveryGroupService;
     }
 
     [HttpGet]
@@ -233,6 +237,118 @@ public class CommercesController : ControllerBase
         catch (ArgumentException ex)
         {
             return NotFound(new { message = ex.Message });
+        }
+    }
+
+    // Delivery Group Management Endpoints
+    [HttpGet("{commerceId}/delivery-groups")]
+    public async Task<ActionResult<IEnumerable<DeliveryGroupDto>>> GetDeliveryGroupsByCommerceId(Guid commerceId)
+    {
+        var deliveryGroups = await _deliveryGroupService.GetDeliveryGroupsByCommerceIdAsync(commerceId);
+        return Ok(deliveryGroups);
+    }
+
+    [HttpGet("{commerceId}/delivery-groups/{groupId}")]
+    public async Task<ActionResult<DeliveryGroupDto>> GetDeliveryGroupById(Guid commerceId, Guid groupId)
+    {
+        try
+        {
+            var deliveryGroup = await _deliveryGroupService.GetDeliveryGroupByIdAsync(commerceId, groupId);
+            return Ok(deliveryGroup);
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("{commerceId}/delivery-groups")]
+    public async Task<ActionResult<DeliveryGroupDto>> CreateDeliveryGroup(Guid commerceId, CreateDeliveryGroupRequest request)
+    {
+        try
+        {
+            var deliveryGroup = await _deliveryGroupService.CreateDeliveryGroupAsync(commerceId, request);
+            return CreatedAtAction(nameof(GetDeliveryGroupById), new { commerceId = commerceId, groupId = deliveryGroup.Id }, deliveryGroup);
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
+        }
+    }
+
+    [HttpPut("{commerceId}/delivery-groups/{groupId}")]
+    public async Task<IActionResult> UpdateDeliveryGroup(Guid commerceId, Guid groupId, UpdateDeliveryGroupRequest request)
+    {
+        try
+        {
+            await _deliveryGroupService.UpdateDeliveryGroupAsync(commerceId, groupId, request);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
+        }
+    }
+
+    [HttpDelete("{commerceId}/delivery-groups/{groupId}")]
+    public async Task<IActionResult> DeleteDeliveryGroup(Guid commerceId, Guid groupId)
+    {
+        try
+        {
+            await _deliveryGroupService.DeleteDeliveryGroupAsync(commerceId, groupId);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("{commerceId}/delivery-groups/{groupId}/assign-delivery-user")]
+    public async Task<IActionResult> AssignDeliveryUserToGroup(Guid commerceId, Guid groupId, AssignDeliveryUserToGroupRequest request)
+    {
+        try
+        {
+            await _deliveryGroupService.AssignDeliveryUserToGroupAsync(commerceId, groupId, request);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (FluentValidation.ValidationException ex)
+        {
+            return BadRequest(new { errors = ex.Errors.Select(e => e.ErrorMessage) });
+        }
+    }
+
+    [HttpDelete("{commerceId}/delivery-groups/{groupId}/remove-delivery-user/{deliveryUserId}")]
+    public async Task<IActionResult> RemoveDeliveryUserFromGroup(Guid commerceId, Guid groupId, Guid deliveryUserId)
+    {
+        try
+        {
+            await _deliveryGroupService.RemoveDeliveryUserFromGroupAsync(commerceId, groupId, deliveryUserId);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
         }
     }
 }

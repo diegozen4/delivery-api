@@ -4,6 +4,7 @@ namespace Domain.Entities;
 public class DeliveryGroup : BaseEntity
 {
     public string Name { get; set; }
+    public string? Description { get; set; }
     public Guid CommerceId { get; set; }
     public Commerce Commerce { get; set; }
 

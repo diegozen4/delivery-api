@@ -20,6 +20,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Version>0.1.0</Version>
+    <UserSecretsId>35d84806-fa0e-4fb8-b71a-3f92c407ffb2</UserSecretsId>
   </PropertyGroup>
 
 </Project>
