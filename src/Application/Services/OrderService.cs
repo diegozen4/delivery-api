@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using Domain.Enums;
 
 namespace Application.Services;
 
@@ -13,15 +15,18 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
     private readonly ICommerceRepository _commerceRepository;
+    private readonly IValidator<PublishOrderRequest> _publishOrderRequestValidator;
 
     public OrderService(
         IOrderRepository orderRepository,
         IProductRepository productRepository,
-        ICommerceRepository commerceRepository)
+        ICommerceRepository commerceRepository,
+        IValidator<PublishOrderRequest> publishOrderRequestValidator)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _commerceRepository = commerceRepository;
+        _publishOrderRequestValidator = publishOrderRequestValidator;
     }
 
     public async Task<OrderDto> CreateOrderAsync(CreateOrderRequest request, Guid clientId)
@@ -98,5 +103,48 @@ public class OrderService : IOrderService
         );
 
         return orderDto;
+    }
+
+    public async Task PublishOrderAsync(Guid orderId, PublishOrderRequest request, Guid ownerId)
+    {
+        // 1. Validate the request using FluentValidation
+        await _publishOrderRequestValidator.ValidateAndThrowAsync(request);
+
+        // 2. Retrieve the order
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
+        {
+            throw new ArgumentException($"Order with ID {orderId} not found.");
+        }
+
+        // 3. Verify ownership (order's commerce must belong to the ownerId)
+        var commerce = await _commerceRepository.GetByIdAsync(order.CommerceId);
+        if (commerce == null || commerce.UserId != ownerId)
+        {
+            throw new UnauthorizedAccessException($"Commerce with ID {order.CommerceId} not found or does not belong to user {ownerId}.");
+        }
+
+        // 4. Validate order status for publishing
+        if (order.Status != OrderStatus.Confirmed && order.Status != OrderStatus.InPreparation)
+        {
+            throw new InvalidOperationException($"Order with ID {orderId} cannot be published. Current status is {order.Status}.");
+        }
+
+        // 5. Update order properties
+        order.DispatchMode = request.DispatchMode;
+        order.ProposedDeliveryFee = request.ProposedDeliveryFee;
+
+        // 6. Set new status based on dispatch mode
+        if (request.DispatchMode == DispatchMode.Market)
+        {
+            order.Status = OrderStatus.ReadyForPickup;
+        }
+        else if (request.DispatchMode == DispatchMode.Negotiation)
+        {
+            order.Status = OrderStatus.AwaitingBids;
+        }
+
+        // 7. Persist changes
+        await _orderRepository.UpdateAsync(order);
     }
 }

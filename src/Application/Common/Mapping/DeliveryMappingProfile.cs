@@ -22,5 +22,19 @@ public class DeliveryMappingProfile : Profile
                     ? $"{src.User.Addresses.First().Street}, {src.User.Addresses.First().City}" 
                     : "Dirección no especificada")
             ));
+
+        CreateMap<Order, NegotiableOrderDto>()
+            .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.CommerceName, opt => opt.MapFrom(src => src.Commerce.Name))
+            .ForMember(dest => dest.CommerceAddress, opt => opt.MapFrom(src => src.Commerce.Address))
+            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalPrice))
+            .ForMember(dest => dest.ProposedDeliveryFee, opt => opt.MapFrom(src => src.ProposedDeliveryFee))
+            .ForMember(dest => dest.ClientAddress, opt => opt.MapFrom(src =>
+                src.User.Addresses.FirstOrDefault(a => a.IsDefault) != null
+                ? $"{src.User.Addresses.FirstOrDefault(a => a.IsDefault).Street}, {src.User.Addresses.FirstOrDefault(a => a.IsDefault).City}"
+                : (src.User.Addresses.Any()
+                    ? $"{src.User.Addresses.First().Street}, {src.User.Addresses.First().City}"
+                    : "Dirección no especificada")
+            ));
     }
 }

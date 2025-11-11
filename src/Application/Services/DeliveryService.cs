@@ -24,4 +24,10 @@ public class DeliveryService : IDeliveryService
         // La lógica de mapeo específica se definirá en un MappingProfile de AutoMapper
         return _mapper.Map<IEnumerable<AvailableOrderDto>>(availableOrders);
     }
+
+    public async Task<IEnumerable<NegotiableOrderDto>> GetNegotiableOrdersAsync()
+    {
+        var negotiableOrders = await _deliveryRepository.GetNegotiableOrdersAsync();
+        return _mapper.Map<IEnumerable<NegotiableOrderDto>>(negotiableOrders);
+    }
 }

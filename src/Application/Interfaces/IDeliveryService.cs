@@ -5,4 +5,5 @@ namespace Application.Interfaces;
 public interface IDeliveryService
 {
     Task<IEnumerable<AvailableOrderDto>> GetAvailableOrdersAsync();
+    Task<IEnumerable<NegotiableOrderDto>> GetNegotiableOrdersAsync();
 }

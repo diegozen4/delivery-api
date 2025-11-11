@@ -23,5 +23,12 @@ namespace WebAPI.Controllers
             var orders = await _deliveryService.GetAvailableOrdersAsync();
             return Ok(orders);
         }
+
+        [HttpGet("negotiable-orders")]
+        public async Task<IActionResult> GetNegotiableOrders()
+        {
+            var orders = await _deliveryService.GetNegotiableOrdersAsync();
+            return Ok(orders);
+        }
     }
 }

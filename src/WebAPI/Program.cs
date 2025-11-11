@@ -12,6 +12,8 @@ using Serilog;
 using Serilog.Events;
 using System.Text;
 using WebAPI.Middleware;
+using FluentValidation; // Mover al inicio
+using System.Reflection; // Mover al inicio
 
 // Configure Serilog for bootstrap logging
 Log.Logger = new LoggerConfiguration()
@@ -45,6 +47,9 @@ try
     builder.Services.AddScoped<IOrderRepository, OrderRepository>();
     builder.Services.AddScoped<IDeliveryService, DeliveryService>();
     builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+
+    // FluentValidation
+    builder.Services.AddValidatorsFromAssembly(typeof(IOrderService).Assembly); // Usar una clase conocida del ensamblado Application
 
     // AutoMapper
     builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

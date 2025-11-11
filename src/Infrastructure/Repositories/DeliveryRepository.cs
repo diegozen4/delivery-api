@@ -26,4 +26,15 @@ public class DeliveryRepository : IDeliveryRepository
             .Where(o => o.Status == OrderStatus.ReadyForPickup && o.DeliveryUserId == null)
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Order>> GetNegotiableOrdersAsync()
+    {
+        // Busca pedidos que estén esperando ofertas y no tengan un repartidor asignado.
+        return await _context.Orders
+            .Include(o => o.Commerce)
+            .Include(o => o.User)
+                .ThenInclude(u => u.Addresses)
+            .Where(o => o.Status == OrderStatus.AwaitingBids && o.DeliveryUserId == null)
+            .ToListAsync();
+    }
 }
