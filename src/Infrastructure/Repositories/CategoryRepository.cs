@@ -2,6 +2,10 @@ using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories;
 
@@ -16,12 +20,24 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<IEnumerable<Category>> GetAllAsync()
     {
-        return await _context.Categories.ToListAsync();
+        return await _context.Categories
+            .Include(c => c.Commerce)
+            .ToListAsync();
     }
 
     public async Task<Category?> GetByIdAsync(Guid id)
     {
-        return await _context.Categories.FindAsync(id);
+        return await _context.Categories
+            .Include(c => c.Commerce)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<IEnumerable<Category>> GetCategoriesByCommerceIdAsync(Guid commerceId)
+    {
+        return await _context.Categories
+            .Where(c => c.CommerceId == commerceId)
+            .Include(c => c.Commerce)
+            .ToListAsync();
     }
 
     public async Task<Category> AddAsync(Category category)

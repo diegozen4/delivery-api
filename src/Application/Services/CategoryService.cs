@@ -1,75 +1,93 @@
-
 using Application.Interfaces;
 using Contracts.Categories;
 using Domain.Entities;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Application.Services;
 
 public class CategoryService : ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly ICommerceRepository _commerceRepository;
+    private readonly IMapper _mapper;
+    private readonly IValidator<CreateCategoryRequest> _createCategoryRequestValidator;
+    private readonly IValidator<UpdateCategoryRequest> _updateCategoryRequestValidator;
 
-    public CategoryService(ICategoryRepository categoryRepository)
+    public CategoryService(
+        ICategoryRepository categoryRepository,
+        ICommerceRepository commerceRepository,
+        IMapper mapper,
+        IValidator<CreateCategoryRequest> createCategoryRequestValidator,
+        IValidator<UpdateCategoryRequest> updateCategoryRequestValidator)
     {
         _categoryRepository = categoryRepository;
+        _commerceRepository = commerceRepository;
+        _mapper = mapper;
+        _createCategoryRequestValidator = createCategoryRequestValidator;
+        _updateCategoryRequestValidator = updateCategoryRequestValidator;
     }
 
-    public async Task<IEnumerable<CategoryDto>> GetAllAsync()
+    public async Task<IEnumerable<CategoryDto>> GetCategoriesByCommerceIdAsync(Guid commerceId)
     {
-        var categories = await _categoryRepository.GetAllAsync();
-        return categories.Select(c => new CategoryDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Description = c.Description
-        });
+        var categories = await _categoryRepository.GetCategoriesByCommerceIdAsync(commerceId);
+        return _mapper.Map<IEnumerable<CategoryDto>>(categories);
     }
 
-    public async Task<CategoryDto?> GetByIdAsync(Guid id)
+    public async Task<CategoryDto> GetCategoryByIdAsync(Guid commerceId, Guid categoryId)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null)
+        var category = await _categoryRepository.GetByIdAsync(categoryId);
+        if (category == null || category.CommerceId != commerceId)
         {
-            return null;
+            throw new ArgumentException($"Category with ID {categoryId} not found in commerce {commerceId}.");
         }
-        return new CategoryDto
-        {
-            Id = category.Id,
-            Name = category.Name,
-            Description = category.Description
-        };
+        return _mapper.Map<CategoryDto>(category);
     }
 
-    public async Task<CategoryDto> CreateAsync(CreateCategoryRequest request)
+    public async Task<CategoryDto> CreateCategoryAsync(Guid commerceId, CreateCategoryRequest request)
     {
-        var category = new Category
+        await _createCategoryRequestValidator.ValidateAndThrowAsync(request);
+
+        var commerce = await _commerceRepository.GetByIdAsync(commerceId);
+        if (commerce == null)
         {
-            Name = request.Name,
-            Description = request.Description
-        };
+            throw new ArgumentException($"Commerce with ID {commerceId} not found.");
+        }
+
+        var category = _mapper.Map<Category>(request);
+        category.Id = Guid.NewGuid();
+        category.CommerceId = commerceId;
 
         var createdCategory = await _categoryRepository.AddAsync(category);
-        return new CategoryDto
-        {
-            Id = createdCategory.Id,
-            Name = createdCategory.Name,
-            Description = createdCategory.Description
-        };
+        return _mapper.Map<CategoryDto>(createdCategory);
     }
 
-    public async Task UpdateAsync(Guid id, UpdateCategoryRequest request)
+    public async Task UpdateCategoryAsync(Guid commerceId, Guid categoryId, UpdateCategoryRequest request)
     {
-        var category = await _categoryRepository.GetByIdAsync(id);
-        if (category != null)
+        await _updateCategoryRequestValidator.ValidateAndThrowAsync(request);
+
+        var category = await _categoryRepository.GetByIdAsync(categoryId);
+        if (category == null || category.CommerceId != commerceId)
         {
-            category.Name = request.Name;
-            category.Description = request.Description;
-            await _categoryRepository.UpdateAsync(category);
+            throw new ArgumentException($"Category with ID {categoryId} not found in commerce {commerceId}.");
         }
+
+        _mapper.Map(request, category);
+        await _categoryRepository.UpdateAsync(category);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteCategoryAsync(Guid commerceId, Guid categoryId)
     {
-        await _categoryRepository.DeleteAsync(id);
+        var category = await _categoryRepository.GetByIdAsync(categoryId);
+        if (category == null || category.CommerceId != commerceId)
+        {
+            throw new ArgumentException($"Category with ID {categoryId} not found in commerce {commerceId}.");
+        }
+
+        await _categoryRepository.DeleteAsync(categoryId);
     }
 }

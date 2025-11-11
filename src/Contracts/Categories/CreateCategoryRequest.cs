@@ -1,7 +1,14 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace Contracts.Categories;
 
 public class CreateCategoryRequest
 {
-    public required string Name { get; set; }
-    public required string Description { get; set; }
+    [Required]
+    [StringLength(100, MinimumLength = 3)]
+    public string Name { get; set; }
+
+    [StringLength(500)]
+    public string? Description { get; set; }
 }
