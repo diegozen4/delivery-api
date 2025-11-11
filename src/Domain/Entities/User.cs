@@ -7,6 +7,7 @@ namespace Domain.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public double? CurrentLatitude { get; set; }
         public double? CurrentLongitude { get; set; }
 
         public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();

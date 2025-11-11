@@ -47,6 +47,7 @@ try
     builder.Services.AddScoped<IOrderRepository, OrderRepository>();
     builder.Services.AddScoped<IDeliveryService, DeliveryService>();
     builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+    builder.Services.AddScoped<IUserService, UserService>(); // Registrar IUserService y UserService
 
     // FluentValidation
     builder.Services.AddValidatorsFromAssembly(typeof(IOrderService).Assembly); // Usar una clase conocida del ensamblado Application
