@@ -2,6 +2,10 @@ using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories;
 
@@ -16,12 +20,27 @@ public class ProductRepository : IProductRepository
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products
+            .Include(p => p.Commerce)
+            .Include(p => p.Category)
+            .ToListAsync();
     }
 
     public async Task<Product?> GetByIdAsync(Guid id)
     {
-        return await _context.Products.FindAsync(id);
+        return await _context.Products
+            .Include(p => p.Commerce)
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsByCommerceIdAsync(Guid commerceId)
+    {
+        return await _context.Products
+            .Where(p => p.CommerceId == commerceId)
+            .Include(p => p.Commerce)
+            .Include(p => p.Category)
+            .ToListAsync();
     }
 
     public async Task<Product> AddAsync(Product product)

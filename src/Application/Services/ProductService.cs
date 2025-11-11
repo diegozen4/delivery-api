@@ -1,6 +1,12 @@
 using Application.Interfaces;
 using Contracts.Products;
 using Domain.Entities;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Application.Services;
 
@@ -8,110 +14,98 @@ public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
     private readonly ICommerceRepository _commerceRepository;
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
+    private readonly IValidator<CreateProductRequest> _createProductRequestValidator;
+    private readonly IValidator<UpdateProductRequest> _updateProductRequestValidator;
 
-    public ProductService(IProductRepository productRepository, ICommerceRepository commerceRepository)
+    public ProductService(
+        IProductRepository productRepository,
+        ICommerceRepository commerceRepository,
+        ICategoryRepository _categoryRepository,
+        IMapper mapper,
+        IValidator<CreateProductRequest> createProductRequestValidator,
+        IValidator<UpdateProductRequest> updateProductRequestValidator)
     {
         _productRepository = productRepository;
         _commerceRepository = commerceRepository;
+        this._categoryRepository = _categoryRepository;
+        _mapper = mapper;
+        _createProductRequestValidator = createProductRequestValidator;
+        _updateProductRequestValidator = updateProductRequestValidator;
     }
 
-    public async Task<IEnumerable<ProductDto>> GetAllAsync()
+    public async Task<IEnumerable<ProductDto>> GetProductsByCommerceIdAsync(Guid commerceId)
     {
-        var products = await _productRepository.GetAllAsync();
-        return products.Select(p => new ProductDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Description = p.Description,
-            Price = p.Price,
-            CategoryId = p.CategoryId,
-            CommerceId = p.CommerceId
-        });
+        var products = await _productRepository.GetProductsByCommerceIdAsync(commerceId);
+        return _mapper.Map<IEnumerable<ProductDto>>(products);
     }
 
-    public async Task<ProductDto?> GetByIdAsync(Guid id)
+    public async Task<ProductDto> GetProductByIdAsync(Guid commerceId, Guid productId)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null)
+        var product = await _productRepository.GetByIdAsync(productId);
+        if (product == null || product.CommerceId != commerceId)
         {
-            return null;
+            throw new ArgumentException($"Product with ID {productId} not found in commerce {commerceId}.");
         }
-        return new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Description = product.Description,
-            Price = product.Price,
-            CategoryId = product.CategoryId,
-            CommerceId = product.CommerceId
-        };
+        return _mapper.Map<ProductDto>(product);
     }
 
-    public async Task<ProductDto> CreateAsync(CreateProductRequest request, Guid userId, IEnumerable<string> userRoles)
+    public async Task<ProductDto> CreateProductAsync(Guid commerceId, CreateProductRequest request)
     {
-        var isOwner = await _commerceRepository.IsUserOwnerAsync(request.CommerceId, userId);
-        if (!isOwner && !userRoles.Contains("Admin"))
+        await _createProductRequestValidator.ValidateAndThrowAsync(request);
+
+        var commerce = await _commerceRepository.GetByIdAsync(commerceId);
+        if (commerce == null)
         {
-            throw new UnauthorizedAccessException("User is not authorized to create products for this commerce.");
+            throw new ArgumentException($"Commerce with ID {commerceId} not found.");
         }
 
-        var product = new Product
+        var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
+        if (category == null)
         {
-            Name = request.Name,
-            Description = request.Description,
-            Price = request.Price,
-            CategoryId = request.CategoryId,
-            CommerceId = request.CommerceId
-        };
+            throw new ArgumentException($"Category with ID {request.CategoryId} not found.");
+        }
+
+        var product = _mapper.Map<Product>(request);
+        product.Id = Guid.NewGuid();
+        product.CommerceId = commerceId;
 
         var createdProduct = await _productRepository.AddAsync(product);
-        return new ProductDto
-        {
-            Id = createdProduct.Id,
-            Name = createdProduct.Name,
-            Description = createdProduct.Description,
-            Price = createdProduct.Price,
-            CategoryId = createdProduct.CategoryId,
-            CommerceId = createdProduct.CommerceId
-        };
+        return _mapper.Map<ProductDto>(createdProduct);
     }
 
-    public async Task UpdateAsync(Guid id, UpdateProductRequest request, Guid userId, IEnumerable<string> userRoles)
+    public async Task UpdateProductAsync(Guid commerceId, Guid productId, UpdateProductRequest request)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null)
+        await _updateProductRequestValidator.ValidateAndThrowAsync(request);
+
+        var product = await _productRepository.GetByIdAsync(productId);
+        if (product == null || product.CommerceId != commerceId)
         {
-            // Consider throwing a NotFoundException here
-            return;
+            throw new ArgumentException($"Product with ID {productId} not found in commerce {commerceId}.");
         }
-        
-        var isOwner = await _commerceRepository.IsUserOwnerAsync(product.CommerceId, userId);
-        if (!isOwner && !userRoles.Contains("Admin"))
+
+        if (request.CategoryId.HasValue)
         {
-            throw new UnauthorizedAccessException("User is not authorized to update products for this commerce.");
+            var category = await _categoryRepository.GetByIdAsync(request.CategoryId.Value);
+            if (category == null)
+            {
+                throw new ArgumentException($"Category with ID {request.CategoryId.Value} not found.");
+            }
         }
-        
-        product.Name = request.Name;
-        product.Description = request.Description;
-        product.Price = request.Price;
-        product.CategoryId = request.CategoryId;
+
+        _mapper.Map(request, product);
         await _productRepository.UpdateAsync(product);
     }
 
-    public async Task DeleteAsync(Guid id, Guid userId, IEnumerable<string> userRoles)
+    public async Task DeleteProductAsync(Guid commerceId, Guid productId)
     {
-        var product = await _productRepository.GetByIdAsync(id);
-        if (product == null)
+        var product = await _productRepository.GetByIdAsync(productId);
+        if (product == null || product.CommerceId != commerceId)
         {
-            return;
+            throw new ArgumentException($"Product with ID {productId} not found in commerce {commerceId}.");
         }
 
-        var isOwner = await _commerceRepository.IsUserOwnerAsync(product.CommerceId, userId);
-        if (!isOwner && !userRoles.Contains("Admin"))
-        {
-            throw new UnauthorizedAccessException("User is not authorized to delete products for this commerce.");
-        }
-
-        await _productRepository.DeleteAsync(id);
+        await _productRepository.DeleteAsync(productId);
     }
 }
