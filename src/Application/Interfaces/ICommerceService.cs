@@ -1,12 +1,16 @@
 using Contracts.Commerces;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Application.Interfaces;
 
 public interface ICommerceService
 {
-    Task<IEnumerable<CommerceDto>> GetAllAsync();
-    Task<CommerceDto?> GetByIdAsync(Guid id);
-    Task<CommerceDto> CreateAsync(CreateCommerceRequest request);
-    Task UpdateAsync(Guid id, UpdateCommerceRequest request);
-    Task DeleteAsync(Guid id);
+    Task<IEnumerable<CommerceDto>> GetAllCommercesAsync();
+    Task<CommerceDto> GetCommerceByIdAsync(Guid commerceId);
+    Task<CommerceDto> CreateCommerceAsync(CreateCommerceRequest request);
+    Task UpdateCommerceAsync(Guid commerceId, UpdateCommerceRequest request);
+    Task DeleteCommerceAsync(Guid commerceId);
+    Task AssignCommerceOwnerAsync(Guid commerceId, AssignCommerceOwnerRequest request);
 }

@@ -1,78 +1,157 @@
 using Application.Interfaces;
 using Contracts.Commerces;
 using Domain.Entities;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Domain.Enums;
 
 namespace Application.Services;
 
 public class CommerceService : ICommerceService
 {
     private readonly ICommerceRepository _commerceRepository;
+    private readonly IAddressRepository _addressRepository;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly IMapper _mapper;
+    private readonly IValidator<CreateCommerceRequest> _createCommerceRequestValidator;
+    private readonly IValidator<UpdateCommerceRequest> _updateCommerceRequestValidator;
+    private readonly IValidator<AssignCommerceOwnerRequest> _assignCommerceOwnerRequestValidator;
 
-    public CommerceService(ICommerceRepository commerceRepository)
+    public CommerceService(
+        ICommerceRepository commerceRepository,
+        IAddressRepository addressRepository,
+        UserManager<User> userManager,
+        RoleManager<Role> roleManager,
+        IMapper mapper,
+        IValidator<CreateCommerceRequest> createCommerceRequestValidator,
+        IValidator<UpdateCommerceRequest> updateCommerceRequestValidator,
+        IValidator<AssignCommerceOwnerRequest> assignCommerceOwnerRequestValidator)
     {
         _commerceRepository = commerceRepository;
+        _addressRepository = addressRepository;
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _mapper = mapper;
+        _createCommerceRequestValidator = createCommerceRequestValidator;
+        _updateCommerceRequestValidator = updateCommerceRequestValidator;
+        _assignCommerceOwnerRequestValidator = assignCommerceOwnerRequestValidator;
     }
 
-    public async Task<IEnumerable<CommerceDto>> GetAllAsync()
+    public async Task<IEnumerable<CommerceDto>> GetAllCommercesAsync()
     {
         var commerces = await _commerceRepository.GetAllAsync();
-        return commerces.Select(c => new CommerceDto
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Address = c.Address,
-            UserId = c.UserId
-        });
+        return _mapper.Map<IEnumerable<CommerceDto>>(commerces);
     }
 
-    public async Task<CommerceDto?> GetByIdAsync(Guid id)
+    public async Task<CommerceDto> GetCommerceByIdAsync(Guid commerceId)
     {
-        var commerce = await _commerceRepository.GetByIdAsync(id);
+        var commerce = await _commerceRepository.GetByIdAsync(commerceId);
         if (commerce == null)
         {
-            return null;
+            throw new ArgumentException($"Commerce with ID {commerceId} not found.");
         }
-        return new CommerceDto
-        {
-            Id = commerce.Id,
-            Name = commerce.Name,
-            Address = commerce.Address,
-            UserId = commerce.UserId
-        };
+        return _mapper.Map<CommerceDto>(commerce);
     }
 
-    public async Task<CommerceDto> CreateAsync(CreateCommerceRequest request)
+    public async Task<CommerceDto> CreateCommerceAsync(CreateCommerceRequest request)
     {
-        var commerce = new Commerce
+        await _createCommerceRequestValidator.ValidateAndThrowAsync(request);
+
+        var commerce = _mapper.Map<Commerce>(request);
+        commerce.Id = Guid.NewGuid();
+        
+        // Ensure Address is properly mapped and has an ID
+        if (request.Address != null)
         {
-            Name = request.Name,
-            Address = request.Address,
-            UserId = request.UserId
-        };
+            commerce.Address = _mapper.Map<Address>(request.Address);
+            commerce.Address.Id = Guid.NewGuid();
+        }
 
         var createdCommerce = await _commerceRepository.AddAsync(commerce);
-        return new CommerceDto
-        {
-            Id = createdCommerce.Id,
-            Name = createdCommerce.Name,
-            Address = createdCommerce.Address,
-            UserId = createdCommerce.UserId
-        };
+        return _mapper.Map<CommerceDto>(createdCommerce);
     }
 
-    public async Task UpdateAsync(Guid id, UpdateCommerceRequest request)
+    public async Task UpdateCommerceAsync(Guid commerceId, UpdateCommerceRequest request)
     {
-        var commerce = await _commerceRepository.GetByIdAsync(id);
-        if (commerce != null)
+        await _updateCommerceRequestValidator.ValidateAndThrowAsync(request);
+
+        var commerce = await _commerceRepository.GetByIdAsync(commerceId);
+        if (commerce == null)
         {
-            commerce.Name = request.Name;
-            commerce.Address = request.Address;
-            await _commerceRepository.UpdateAsync(commerce);
+            throw new ArgumentException($"Commerce with ID {commerceId} not found.");
         }
+
+        _mapper.Map(request, commerce);
+
+        if (request.Address != null)
+        {
+            if (commerce.Address != null)
+            {
+                _mapper.Map(request.Address, commerce.Address);
+                await _addressRepository.UpdateAsync(commerce.Address);
+            }
+            else
+            {
+                var newAddress = _mapper.Map<Address>(request.Address);
+                newAddress.Id = Guid.NewGuid();
+                commerce.Address = newAddress;
+                await _addressRepository.AddAsync(newAddress);
+            }
+        }
+
+        await _commerceRepository.UpdateAsync(commerce);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteCommerceAsync(Guid commerceId)
     {
-        await _commerceRepository.DeleteAsync(id);
+        var commerce = await _commerceRepository.GetByIdAsync(commerceId);
+        if (commerce == null)
+        {
+            throw new ArgumentException($"Commerce with ID {commerceId} not found.");
+        }
+        await _commerceRepository.DeleteAsync(commerceId);
+    }
+
+    public async Task AssignCommerceOwnerAsync(Guid commerceId, AssignCommerceOwnerRequest request)
+    {
+        await _assignCommerceOwnerRequestValidator.ValidateAndThrowAsync(request);
+
+        var commerce = await _commerceRepository.GetByIdAsync(commerceId);
+        if (commerce == null)
+        {
+            throw new ArgumentException($"Commerce with ID {commerceId} not found.");
+        }
+
+        var user = await _userManager.FindByIdAsync(request.OwnerUserId.ToString());
+        if (user == null)
+        {
+            throw new ArgumentException($"User with ID {request.OwnerUserId} not found.");
+        }
+
+        // Check if user is already a "Negocio" role, if not, assign it
+        if (!await _userManager.IsInRoleAsync(user, "Negocio"))
+        {
+            if (!await _userManager.IsInRoleAsync(user, "Administrador")) // Admins can also own commerces
+            {
+                if (!await _roleManager.RoleExistsAsync("Negocio"))
+                {
+                    await _roleManager.CreateAsync(new Role { Name = "Negocio" });
+                }
+                var result = await _userManager.AddToRoleAsync(user, "Negocio");
+                if (!result.Succeeded)
+                {
+                    throw new InvalidOperationException($"Failed to assign 'Negocio' role to user {user.Id}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                }
+            }
+        }
+
+        commerce.UserId = request.OwnerUserId;
+        await _commerceRepository.UpdateAsync(commerce);
     }
 }
