@@ -43,6 +43,11 @@ try
     builder.Services.AddScoped<ICommerceRepository, CommerceRepository>();
     builder.Services.AddScoped<IOrderService, OrderService>();
     builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+    builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+    builder.Services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+
+    // AutoMapper
+    builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
     // Authentication Services
     builder.Services.AddScoped<IAuthService, AuthService>();

@@ -1,12 +1,12 @@
-
 namespace Domain.Enums;
 
 public enum OrderStatus
 {
     Pending,
     Confirmed,
-    Preparing,
-    Sent,
+    InPreparation,
+    ReadyForPickup,
+    InTransit,
     Delivered,
     Cancelled
 }

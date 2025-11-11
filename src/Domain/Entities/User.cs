@@ -1,11 +1,14 @@
-
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
-namespace Domain.Entities;
-
-public class User : IdentityUser<Guid>
+namespace Domain.Entities
 {
-    public string? FirebaseId { get; set; }
-
-    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public class User : IdentityUser<Guid>
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public virtual ICollection<Order> OrdersAsClient { get; set; } = new List<Order>();
+        public virtual ICollection<Order> OrdersAsDelivery { get; set; } = new List<Order>();
+    }
 }

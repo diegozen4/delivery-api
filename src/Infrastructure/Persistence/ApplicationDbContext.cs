@@ -82,6 +82,13 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
             .HasMany(o => o.OrderDetails)
             .WithOne(od => od.Order)
             .HasForeignKey(od => od.OrderId);
+
+        // Relationship between Order and Delivery User
+        modelBuilder.Entity<Order>()
+            .HasOne(o => o.DeliveryUser)
+            .WithMany(u => u.OrdersAsDelivery)
+            .HasForeignKey(o => o.DeliveryUserId)
+            .OnDelete(DeleteBehavior.SetNull); // If a delivery user is deleted, set DeliveryUserId to null
             
         // DeliveryGroup and DeliveryUser (Many-to-Many)
         modelBuilder.Entity<DeliveryGroupUser>()
