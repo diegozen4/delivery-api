@@ -35,6 +35,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     public DbSet<DeliveryCandidate> DeliveryCandidates { get; set; }
     public DbSet<DeliveryGroup> DeliveryGroups { get; set; }
     public DbSet<DeliveryGroupUser> DeliveryGroupUsers { get; set; }
+    public DbSet<DeliveryOffer> DeliveryOffers { get; set; }
 
     // Payments
     public DbSet<Transaction> Transactions { get; set; }
@@ -103,6 +104,19 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
             .HasOne(dgu => dgu.DeliveryUser)
             .WithMany(du => du.DeliveryGroups)
             .HasForeignKey(dgu => dgu.DeliveryUserId);
+
+        // DeliveryOffer Relationships
+        modelBuilder.Entity<DeliveryOffer>()
+            .HasOne(o => o.Order)
+            .WithMany(o => o.DeliveryOffers)
+            .HasForeignKey(o => o.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DeliveryOffer>()
+            .HasOne(o => o.DeliveryUser)
+            .WithMany(u => u.DeliveryOffers)
+            .HasForeignKey(o => o.DeliveryUserId)
+            .OnDelete(DeleteBehavior.Cascade);
             
         // Enum Conversions
         modelBuilder.Entity<Order>()
