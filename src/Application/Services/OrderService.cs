@@ -212,4 +212,78 @@ public class OrderService : IOrderService
         // 6. Persist all changes
         await _orderRepository.UpdateAsync(order);
     }
+
+    public async Task CancelOrderAsync(Guid orderId, Guid userId, string userRole)
+    {
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
+        {
+            throw new ArgumentException($"Order with ID {orderId} not found.");
+        }
+
+        // Check if the order is already in a final state
+        if (order.Status == OrderStatus.Delivered || order.Status == OrderStatus.Cancelled)
+        {
+            throw new InvalidOperationException($"Order with ID {orderId} is already in a final state ({order.Status}) and cannot be cancelled.");
+        }
+
+        bool canCancel = false;
+
+        if (userRole == "Cliente")
+        {
+            if (order.ClientId != userId)
+            {
+                throw new UnauthorizedAccessException($"Client {userId} is not authorized to cancel order {orderId}.");
+            }
+            // Client can cancel if order is Pending or Confirmed
+            if (order.Status == OrderStatus.Pending || order.Status == OrderStatus.Confirmed)
+            {
+                canCancel = true;
+            }
+        }
+        else if (userRole == "Negocio")
+        {
+            var commerce = await _commerceRepository.GetByIdAsync(order.CommerceId);
+            if (commerce == null || commerce.UserId != userId)
+            {
+                throw new UnauthorizedAccessException($"Business {userId} is not authorized to cancel order {orderId}.");
+            }
+            // Business can cancel if order is Pending, Confirmed, InPreparation, or ReadyForPickup
+            if (order.Status == OrderStatus.Pending ||
+                order.Status == OrderStatus.Confirmed ||
+                order.Status == OrderStatus.InPreparation ||
+                order.Status == OrderStatus.ReadyForPickup ||
+                order.Status == OrderStatus.AwaitingBids)
+            {
+                canCancel = true;
+            }
+        }
+        // Add Admin role cancellation logic if needed (Admin can cancel at any stage)
+
+        if (!canCancel)
+        {
+            throw new InvalidOperationException($"Order with ID {orderId} cannot be cancelled by a {userRole} in its current state ({order.Status}).");
+        }
+
+        order.Status = OrderStatus.Cancelled;
+        await _orderRepository.UpdateAsync(order);
+    }
+
+    public async Task<IEnumerable<OrderHistoryItemDto>> GetClientOrderHistoryAsync(Guid clientId)
+    {
+        var orders = await _orderRepository.GetOrdersByClientIdAsync(clientId);
+        return _mapper.Map<IEnumerable<OrderHistoryItemDto>>(orders);
+    }
+
+    public async Task<IEnumerable<OrderHistoryItemDto>> GetCommerceOrderHistoryAsync(Guid commerceId)
+    {
+        var orders = await _orderRepository.GetOrdersByCommerceIdAsync(commerceId);
+        return _mapper.Map<IEnumerable<OrderHistoryItemDto>>(orders);
+    }
+
+    public async Task<IEnumerable<OrderHistoryItemDto>> GetDeliveryUserOrderHistoryAsync(Guid deliveryUserId)
+    {
+        var orders = await _orderRepository.GetOrdersByDeliveryUserIdAsync(deliveryUserId);
+        return _mapper.Map<IEnumerable<OrderHistoryItemDto>>(orders);
+    }
 }

@@ -12,10 +12,12 @@ namespace WebAPI.Controllers
     public class DeliveryController : ControllerBase
     {
         private readonly IDeliveryService _deliveryService;
+        private readonly IOrderService _orderService; // Inyectar IOrderService
 
-        public DeliveryController(IDeliveryService deliveryService)
+        public DeliveryController(IDeliveryService deliveryService, IOrderService orderService) // Añadir al constructor
         {
             _deliveryService = deliveryService;
+            _orderService = orderService; // Inicializar
         }
 
         [HttpGet("available-orders")]
@@ -109,6 +111,19 @@ namespace WebAPI.Controllers
                 return BadRequest(new { message = ex.Message });
             }
             // Other exceptions will be caught by the ErrorHandlingMiddleware
+        }
+
+        [HttpGet("history")]
+        public async Task<IActionResult> GetDeliveryUserOrderHistory()
+        {
+            var deliveryUserClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(deliveryUserClaimId) || !Guid.TryParse(deliveryUserClaimId, out Guid deliveryUserId))
+            {
+                return Unauthorized();
+            }
+
+            var history = await _orderService.GetDeliveryUserOrderHistoryAsync(deliveryUserId);
+            return Ok(history);
         }
     }
 }

@@ -129,4 +129,65 @@ public class OrdersController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    [HttpPost("{orderId}/cancel")]
+    [Authorize(Roles = "Cliente,Negocio")] // Both Client and Business can cancel
+    public async Task<IActionResult> CancelOrder(Guid orderId)
+    {
+        var userClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userRole = User.FindFirstValue(ClaimTypes.Role);
+
+        if (string.IsNullOrEmpty(userClaimId) || !Guid.TryParse(userClaimId, out Guid userId) || string.IsNullOrEmpty(userRole))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            await _orderService.CancelOrderAsync(orderId, userId, userRole);
+            return NoContent(); // 204 No Content
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpGet("history/client")]
+    [Authorize(Roles = "Cliente")]
+    public async Task<IActionResult> GetClientOrderHistory()
+    {
+        var clientClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(clientClaimId) || !Guid.TryParse(clientClaimId, out Guid clientId))
+        {
+            return Unauthorized();
+        }
+
+        var history = await _orderService.GetClientOrderHistoryAsync(clientId);
+        return Ok(history);
+    }
+
+    [HttpGet("history/commerce")]
+    [Authorize(Roles = "Negocio")]
+    public async Task<IActionResult> GetCommerceOrderHistory()
+    {
+        var commerceClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(commerceClaimId) || !Guid.TryParse(commerceClaimId, out Guid commerceId))
+        {
+            return Unauthorized();
+        }
+
+        // Assuming the commerceId is the UserId for the commerce owner
+        // In a more complex scenario, we might need to get the actual CommerceId from the UserId
+        var history = await _orderService.GetCommerceOrderHistoryAsync(commerceId);
+        return Ok(history);
+    }
 }

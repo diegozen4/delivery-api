@@ -11,4 +11,8 @@ public interface IOrderService
     Task PublishOrderAsync(Guid orderId, PublishOrderRequest request, Guid ownerId);
     Task<IEnumerable<DeliveryOfferDto>> GetOffersForOrderAsync(Guid orderId, Guid ownerId);
     Task AcceptOfferAsync(Guid offerId, Guid ownerId);
+    Task CancelOrderAsync(Guid orderId, Guid userId, string userRole);
+    Task<IEnumerable<OrderHistoryItemDto>> GetClientOrderHistoryAsync(Guid clientId);
+    Task<IEnumerable<OrderHistoryItemDto>> GetCommerceOrderHistoryAsync(Guid commerceId);
+    Task<IEnumerable<OrderHistoryItemDto>> GetDeliveryUserOrderHistoryAsync(Guid deliveryUserId);
 }
