@@ -36,5 +36,8 @@ public class DeliveryMappingProfile : Profile
                     ? $"{src.User.Addresses.First().Street}, {src.User.Addresses.First().City}"
                     : "Dirección no especificada")
             ));
+
+        CreateMap<DeliveryOffer, DeliveryOfferDto>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
     }
 }

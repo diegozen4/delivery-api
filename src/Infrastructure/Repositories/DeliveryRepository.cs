@@ -43,4 +43,12 @@ public class DeliveryRepository : IDeliveryRepository
         await _context.DeliveryOffers.AddAsync(offer);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<DeliveryOffer?> GetOfferByIdAsync(Guid offerId)
+    {
+        return await _context.DeliveryOffers
+            .Include(o => o.Order)
+                .ThenInclude(order => order.DeliveryOffers)
+            .FirstOrDefaultAsync(o => o.Id == offerId);
+    }
 }

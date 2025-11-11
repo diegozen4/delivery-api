@@ -75,4 +75,58 @@ public class OrdersController : ControllerBase
         }
         // Other exceptions will be caught by the ErrorHandlingMiddleware
     }
+
+    [HttpGet("{orderId}/offers")]
+    [Authorize(Roles = "Negocio")]
+    public async Task<IActionResult> GetOffersForOrder(Guid orderId)
+    {
+        var ownerClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(ownerClaimId) || !Guid.TryParse(ownerClaimId, out Guid ownerId))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var offers = await _orderService.GetOffersForOrderAsync(orderId, ownerId);
+            return Ok(offers);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
+    }
+
+    [HttpPost("offers/{offerId}/accept")]
+    [Authorize(Roles = "Negocio")]
+    public async Task<IActionResult> AcceptOffer(Guid offerId)
+    {
+        var ownerClaimId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(ownerClaimId) || !Guid.TryParse(ownerClaimId, out Guid ownerId))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            await _orderService.AcceptOfferAsync(offerId, ownerId);
+            return NoContent();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Forbid(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

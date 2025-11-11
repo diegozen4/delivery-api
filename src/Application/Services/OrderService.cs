@@ -1,12 +1,14 @@
 using Application.Interfaces;
+using AutoMapper;
 using Contracts.Orders;
+using Contracts.Deliveries; // Añadir esta línea
 using Domain.Entities;
+using Domain.Enums;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation;
-using Domain.Enums;
 
 namespace Application.Services;
 
@@ -15,18 +17,24 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
     private readonly ICommerceRepository _commerceRepository;
+    private readonly IDeliveryRepository _deliveryRepository;
     private readonly IValidator<PublishOrderRequest> _publishOrderRequestValidator;
+    private readonly IMapper _mapper;
 
     public OrderService(
         IOrderRepository orderRepository,
         IProductRepository productRepository,
         ICommerceRepository commerceRepository,
-        IValidator<PublishOrderRequest> publishOrderRequestValidator)
+        IDeliveryRepository deliveryRepository,
+        IValidator<PublishOrderRequest> publishOrderRequestValidator,
+        IMapper mapper)
     {
         _orderRepository = orderRepository;
         _productRepository = productRepository;
         _commerceRepository = commerceRepository;
+        _deliveryRepository = deliveryRepository;
         _publishOrderRequestValidator = publishOrderRequestValidator;
+        _mapper = mapper;
     }
 
     public async Task<OrderDto> CreateOrderAsync(CreateOrderRequest request, Guid clientId)
@@ -145,6 +153,63 @@ public class OrderService : IOrderService
         }
 
         // 7. Persist changes
+        await _orderRepository.UpdateAsync(order);
+    }
+
+    public async Task<IEnumerable<DeliveryOfferDto>> GetOffersForOrderAsync(Guid orderId, Guid ownerId)
+    {
+        // 1. Retrieve the order
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
+        {
+            throw new ArgumentException($"Order with ID {orderId} not found.");
+        }
+
+        // 2. Verify ownership
+        if (order.Commerce.UserId != ownerId)
+        {
+            throw new UnauthorizedAccessException($"User {ownerId} is not authorized to view offers for order {orderId}.");
+        }
+
+        // 3. Map and return the offers
+        return _mapper.Map<IEnumerable<DeliveryOfferDto>>(order.DeliveryOffers);
+    }
+
+    public async Task AcceptOfferAsync(Guid offerId, Guid ownerId)
+    {
+        // 1. Retrieve the offer and its related order and other offers
+        var offer = await _deliveryRepository.GetOfferByIdAsync(offerId);
+        if (offer == null)
+        {
+            throw new ArgumentException($"Offer with ID {offerId} not found.");
+        }
+
+        var order = offer.Order;
+
+        // 2. Verify ownership
+        var commerce = await _commerceRepository.GetByIdAsync(order.CommerceId);
+        if (commerce == null || commerce.UserId != ownerId)
+        {
+            throw new UnauthorizedAccessException($"User {ownerId} is not authorized to accept offers for order {order.Id}.");
+        }
+
+        // 3. Verify order status
+        if (order.Status != OrderStatus.AwaitingBids)
+        {
+            throw new InvalidOperationException($"Order with ID {order.Id} is not awaiting bids.");
+        }
+
+        // 4. Update the order
+        order.Status = OrderStatus.ReadyForPickup;
+        order.DeliveryUserId = offer.DeliveryUserId;
+
+        // 5. Update all offers for the order
+        foreach (var o in order.DeliveryOffers)
+        {
+            o.Status = o.Id == offerId ? OfferStatus.Accepted : OfferStatus.Rejected;
+        }
+
+        // 6. Persist all changes
         await _orderRepository.UpdateAsync(order);
     }
 }
